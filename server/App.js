@@ -54,25 +54,24 @@ app.post("/register", async (req, res) => {
   // Sadece demo amaçlıdır
   // give me a function that checks the username from users collection
   try {
-    const result = await mongoose.connection.db
+    const user = await mongoose.connection.db
       .collection("users")
       .findOne({ username });
 
-    if (result) {
-      res.status(401).send("User already exists");
+    if (user) {
+      return res.status(401).json({ message: "User already exists" });
     }
 
-    console.log(user);
-    await mongoose.connection.db
+    const result = await mongoose.connection.db
       .collection("users")
       .insertOne({ username, password });
 
     console.log("1 document inserted");
 
-    res.json({ message: "User registered successfully" });
+    return res.json({ message: "User registered successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).send("Internal server error");
+    return res.status(500).send("Internal server error");
   }
 });
 
